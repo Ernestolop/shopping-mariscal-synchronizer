@@ -1,7 +1,7 @@
 package com.elopez.mariscal.synchronizer.modules.sender.controller;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToSend;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.input.SendInvoiceInputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendInvoiceInputBoundary;
 
 public class SendInvoiceController {
 

@@ -6,8 +6,8 @@ import java.time.LocalDate;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.Currency;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToCancel;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.input.SendCancelInvoiceInputBoundary;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.output.SendCancelInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendCancelInvoiceInputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendCancelInvoiceOutputBoundary;
 
 public class SendCancelInvoiceInteractor implements SendCancelInvoiceInputBoundary {
 

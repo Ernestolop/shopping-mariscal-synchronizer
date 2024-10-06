@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.Currency;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToSend;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.input.SendInvoiceInputBoundary;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.output.SendInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendInvoiceInputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendInvoiceOutputBoundary;
 
 public class SendInvoiceInteractor implements SendInvoiceInputBoundary {
 

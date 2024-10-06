@@ -3,7 +3,7 @@ package com.elopez.mariscal.synchronizer.modules.sender.presenter;
 import java.time.LocalDate;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToCancel;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.output.SendCancelInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendCancelInvoiceOutputBoundary;
 
 public class SendCancelInvoicePresenter implements SendCancelInvoiceOutputBoundary {
 

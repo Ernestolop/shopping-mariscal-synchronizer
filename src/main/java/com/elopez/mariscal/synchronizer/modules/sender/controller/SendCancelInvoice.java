@@ -1,7 +1,7 @@
 package com.elopez.mariscal.synchronizer.modules.sender.controller;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToCancel;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.input.SendCancelInvoiceInputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendCancelInvoiceInputBoundary;
 
 public class SendCancelInvoice {
 

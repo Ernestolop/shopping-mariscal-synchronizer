@@ -1,4 +1,4 @@
-package com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.output;
+package com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToSend;
 
