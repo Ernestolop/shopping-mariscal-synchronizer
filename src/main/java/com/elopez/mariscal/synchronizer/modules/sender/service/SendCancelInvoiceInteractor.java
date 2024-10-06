@@ -1,34 +1,36 @@
-package com.elopez.mariscal.synchronizer.modules.sender.service.interactors;
+package com.elopez.mariscal.synchronizer.modules.sender.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.Currency;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
-import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToSend;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.input.SendInvoiceInputBoundary;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.output.SendInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToCancel;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.input.SendCancelInvoiceInputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundaries.output.SendCancelInvoiceOutputBoundary;
 
-public class SendInvoiceInteractor implements SendInvoiceInputBoundary {
+public class SendCancelInvoiceInteractor implements SendCancelInvoiceInputBoundary {
 
-    private SendInvoiceOutputBoundary sendInvoiceOutputBoundary;
+    private SendCancelInvoiceOutputBoundary sendCancelInvoiceOutputBoundary;
 
-    public SendInvoiceInteractor(SendInvoiceOutputBoundary sendInvoiceOutputBoundary) {
-        this.sendInvoiceOutputBoundary = sendInvoiceOutputBoundary;
+    public SendCancelInvoiceInteractor(SendCancelInvoiceOutputBoundary sendCancelInvoiceOutputBoundary) {
+        this.sendCancelInvoiceOutputBoundary = sendCancelInvoiceOutputBoundary;
     }
 
     @Override
-    public void sendInvoice(InvoiceToSend invoice) throws Exception {
+    public void cancelInvoice(InvoiceToCancel invoice) throws Exception {
         validateInvoice(invoice);
-        invoice.tipo = DocumentType.FACT;
-        sendInvoiceOutputBoundary.sendInvoice(invoice);
+        invoice.tipo = DocumentType.AFACT;
+        sendCancelInvoiceOutputBoundary.sendCancelInvoice(invoice);
     }
 
-    private void validateInvoice(InvoiceToSend invoice) {
+    private void validateInvoice(InvoiceToCancel invoice) {
         validateNumber(invoice.comprobante);
         validateIssuedDate(invoice.fecha);
         validateExchangeRate(invoice.moneda, invoice.tipoCambio);
         validateCustomer(invoice.cliente, invoice.ruc);
         validateAmounts(invoice.gravadas10, invoice.gravadas5, invoice.exentas, invoice.total);
+        validateCancelledDate(invoice.anulado);
     }
 
     private void validateNumber(String documentNumber) {
@@ -70,6 +72,12 @@ public class SendInvoiceInteractor implements SendInvoiceInputBoundary {
             throw new Error("El monto exento es requerido");
         } else if (total == null) {
             throw new Error("El monto total es requerido");
+        }
+    }
+
+    private void validateCancelledDate(LocalDate cancelledDate) {
+        if (cancelledDate == null) {
+            throw new Error("La fecha de anulación es requerida");
         }
     }
 
