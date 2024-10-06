@@ -19,13 +19,9 @@ public class SendCancelInvoiceInteractor implements SendCancelInvoiceInputBounda
 
     @Override
     public void cancelInvoice(InvoiceToCancel invoice) throws Exception {
-        try {
-            validateInvoice(invoice);
-            invoice.tipo = DocumentType.AFACT;
-            sendCancelInvoiceOutputBoundary.sendCancelInvoice(invoice);
-        } catch (Exception e) {
-            throw e;
-        }
+        validateInvoice(invoice);
+        invoice.tipo = DocumentType.AFACT;
+        sendCancelInvoiceOutputBoundary.sendCancelInvoice(invoice);
     }
 
     private void validateInvoice(InvoiceToCancel invoice) {

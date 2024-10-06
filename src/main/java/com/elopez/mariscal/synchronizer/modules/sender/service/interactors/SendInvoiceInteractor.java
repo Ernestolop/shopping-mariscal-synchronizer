@@ -18,13 +18,9 @@ public class SendInvoiceInteractor implements SendInvoiceInputBoundary {
 
     @Override
     public void sendInvoice(InvoiceToSend invoice) throws Exception {
-        try {
-            validateInvoice(invoice);
-            invoice.tipo = DocumentType.FACT;
-            sendInvoiceOutputBoundary.sendInvoice(invoice);
-        } catch (Exception e) {
-            throw e;
-        }
+        validateInvoice(invoice);
+        invoice.tipo = DocumentType.FACT;
+        sendInvoiceOutputBoundary.sendInvoice(invoice);
     }
 
     private void validateInvoice(InvoiceToSend invoice) {
@@ -48,7 +44,6 @@ public class SendInvoiceInteractor implements SendInvoiceInputBoundary {
             throw new Error("La fecha de emisión es requerida");
         }
     }
-
 
     private void validateExchangeRate(Currency currency, BigDecimal exchangeRate) {
         if (currency == null) {
