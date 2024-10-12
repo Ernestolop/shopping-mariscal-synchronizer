@@ -26,7 +26,7 @@ public class RetrieveCancelledInvoicesJpa implements RetrieveCancelledInvoicesOu
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    @Value("${ndm.initial.invoice.number}")
+    @Value("${retriever.initial.invoice.number}")
     private String initialInvoiceNumber;
 
     @Override

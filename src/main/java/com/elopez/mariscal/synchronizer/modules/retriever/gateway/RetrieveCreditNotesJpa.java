@@ -26,7 +26,7 @@ public class RetrieveCreditNotesJpa implements RetrieveCreditNotesOutputBoundary
     @Autowired
     private CreditNoteRepository creditNoteRepository;
 
-    @Value("${ndm.initial.invoice.number}")
+    @Value("${retriever.initial.invoice.number}")
     private String initialCreditNoteNumber;
 
     @Override

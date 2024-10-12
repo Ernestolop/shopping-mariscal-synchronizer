@@ -26,7 +26,7 @@ public class RetrieveInvoicesJpa implements RetrieveInvoicesOutputBoundary {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    @Value("${ndm.initial.invoice.number}")
+    @Value("${retriever.initial.invoice.number}")
     private String initialInvoiceNumber;
 
     @Override
