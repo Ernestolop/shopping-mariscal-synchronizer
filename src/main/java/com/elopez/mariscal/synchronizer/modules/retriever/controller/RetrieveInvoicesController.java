@@ -5,15 +5,15 @@ import java.util.Map;
 
 import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.input.RetrieveInvoicesInputBoundary;
 
-public class RetrieveNewInvoicesController {
+public class RetrieveInvoicesController {
 
     private RetrieveInvoicesInputBoundary retrieveInvoicesInputBoundary;
 
-    public RetrieveNewInvoicesController(RetrieveInvoicesInputBoundary retrieveInvoicesInputBoundary) {
+    public RetrieveInvoicesController(RetrieveInvoicesInputBoundary retrieveInvoicesInputBoundary) {
         this.retrieveInvoicesInputBoundary = retrieveInvoicesInputBoundary;
     }
 
-    public List<Map<String, Object>> retrieveNewInvoices() throws Exception {
+    public List<Map<String, Object>> retrieveInvoices() throws Exception {
         return retrieveInvoicesInputBoundary.retrieveInvoices();
     }
 

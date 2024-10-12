@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.Document;
+import com.elopez.mariscal.synchronizer.modules.auditor.errors.DocumentNotFound;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.output.AuditOuputBoundary;
 
 @Service
@@ -40,7 +41,7 @@ public class DocumentGateway
     }
 
     @Override
-    public void cancelDocument(Document document) {
+    public void cancelDocument(Document document) throws DocumentNotFound {
         Optional<DocumentEntity> OptionalDocumentEntity = documentRepository.findByExternalIdAndType(document.id,
                 document.type);
         if (OptionalDocumentEntity.isPresent()) {
@@ -51,11 +52,11 @@ public class DocumentGateway
             documentRepository.save(documentEntity);
             return;
         }
-        throw new Error("Document with id " + document.id + " and type " + document.type.name() + " not found");
+        throw new DocumentNotFound("Document with id " + document.id + " and type " + document.type.name() + " not found");
     }
 
     @Override
-    public Map<String, Object> findDocument(Document document) {
+    public Map<String, Object> findDocument(Document document) throws DocumentNotFound {
         Optional<DocumentEntity> OptionalDocumentEntity = documentRepository.findByExternalIdAndType(document.id,
                 document.type);
         if (OptionalDocumentEntity.isPresent()) {
@@ -71,7 +72,7 @@ public class DocumentGateway
             documentMap.put("canceledAttempts", documentEntity.getCanceledAttempts());
             return documentMap;
         }
-        throw new Error("Document with id " + document.id + " and type " + document.type.name() + " not found");
+        throw new DocumentNotFound("Document with id " + document.id + " and type " + document.type.name() + " not found");
     }
 
     @Override

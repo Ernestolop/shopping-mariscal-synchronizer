@@ -73,20 +73,6 @@ public class RetrieveInvoicesJpa implements RetrieveInvoicesOutputBoundary {
     private String invoiceNumber(String uExxFEClaAcc) {
         int index = uExxFEClaAcc.indexOf(initialInvoiceNumber);
         return uExxFEClaAcc.substring(index);
-    }
-
-    //TODO: sacar los metodos comentados
-    /*private Currency currency(String docCur) {
-        switch (docCur) {
-            case "USD":
-                return Currency.US;
-            case "GS":
-                return Currency.GS;
-            default:
-                return Currency.GS;
-        }
-    }*/
-
-    
+    }    
     
 }
