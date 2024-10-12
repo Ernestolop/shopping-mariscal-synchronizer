@@ -3,11 +3,11 @@ package com.elopez.mariscal.synchronizer.modules.sender.controller;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToCancel;
 import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendCancelDocumentInputBoundary;
 
-public class SendCancelDocument {
+public class SendCancelDocumentController {
 
     private SendCancelDocumentInputBoundary sendCancelDocumentInputBoundary;
 
-    public SendCancelDocument(SendCancelDocumentInputBoundary sendCancelDocumentInteractor) {
+    public SendCancelDocumentController(SendCancelDocumentInputBoundary sendCancelDocumentInteractor) {
         this.sendCancelDocumentInputBoundary = sendCancelDocumentInteractor;
     }
 
