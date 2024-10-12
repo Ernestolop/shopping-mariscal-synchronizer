@@ -4,31 +4,31 @@ import java.math.BigDecimal;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.Currency;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
-import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToSend;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendInvoiceInputBoundary;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToSend;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendDocumentInputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendDocumentOutputBoundary;
 
-public class SendInvoiceInteractor implements SendInvoiceInputBoundary {
+public class SendDocumentInteractor implements SendDocumentInputBoundary {
 
-    private SendInvoiceOutputBoundary sendInvoiceOutputBoundary;
+    private SendDocumentOutputBoundary sendDocumentOutputBoundary;
 
-    public SendInvoiceInteractor(SendInvoiceOutputBoundary sendInvoiceOutputBoundary) {
-        this.sendInvoiceOutputBoundary = sendInvoiceOutputBoundary;
+    public SendDocumentInteractor(SendDocumentOutputBoundary sendDocumentOutputBoundary) {
+        this.sendDocumentOutputBoundary = sendDocumentOutputBoundary;
     }
 
     @Override
-    public void sendInvoice(InvoiceToSend invoice) throws Exception {
-        validateInvoice(invoice);
-        invoice.tipo = DocumentType.FACT;
-        sendInvoiceOutputBoundary.sendInvoice(invoice);
+    public void sendDocument(DocumentToSend document) throws Exception {
+        validateDocument(document);
+        sendDocumentOutputBoundary.sendDocument(document);
     }
 
-    private void validateInvoice(InvoiceToSend invoice) {
-        validateNumber(invoice.comprobante);
-        validateIssuedDate(invoice.fecha);
-        validateExchangeRate(invoice.moneda, invoice.tipoCambio);
-        validateCustomer(invoice.cliente, invoice.ruc);
-        validateAmounts(invoice.gravadas10, invoice.gravadas5, invoice.exentas, invoice.total);
+    private void validateDocument(DocumentToSend document) {
+        validateNumber(document.comprobante);
+        validateDocumentType(document.tipo);
+        validateIssuedDate(document.fecha);
+        validateExchangeRate(document.moneda, document.tipoCambio);
+        validateCustomer(document.cliente, document.ruc);
+        validateAmounts(document.gravadas10, document.gravadas5, document.exentas, document.total);
     }
 
     private void validateNumber(String documentNumber) {
@@ -36,6 +36,14 @@ public class SendInvoiceInteractor implements SendInvoiceInputBoundary {
             throw new Error("El número de documento es requerido");
         } else if (!documentNumber.matches("\\d{3}-\\d{3}-\\d{7}")) {
             throw new Error("El número de documento no es válido");
+        }
+    }
+
+    private void validateDocumentType(DocumentType type) {
+        if (type == null) {
+            throw new Error("El tipo de documento es requerido");
+        } else if (!type.equals(DocumentType.FACT) && !type.equals(DocumentType.NCR)) {
+            throw new Error("El tipo de documento para envio es invalido");
         }
     }
 

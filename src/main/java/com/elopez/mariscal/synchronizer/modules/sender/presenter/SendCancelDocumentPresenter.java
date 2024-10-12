@@ -2,29 +2,29 @@ package com.elopez.mariscal.synchronizer.modules.sender.presenter;
 
 import java.time.LocalDate;
 
-import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToCancel;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendCancelInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToCancel;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendCancelDocumentOutputBoundary;
 
-public class SendCancelInvoicePresenter implements SendCancelInvoiceOutputBoundary {
+public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoundary {
 
-    private SendCancelInvoiceGateway sendCancelInvoiceGateway;
+    private SendCancelDocumentGateway sendCancelDocumentGateway;
 
-    public SendCancelInvoicePresenter(SendCancelInvoiceGateway sendCancelInvoiceGateway) {
-        this.sendCancelInvoiceGateway = sendCancelInvoiceGateway;
+    public SendCancelDocumentPresenter(SendCancelDocumentGateway sendCancelDocumentGateway) {
+        this.sendCancelDocumentGateway = sendCancelDocumentGateway;
     }
 
     @Override
-    public void sendCancelInvoice(InvoiceToCancel cancelInvoice) throws Exception {
-        String cancelInvoiceJson = cancelInvoiceToJson(cancelInvoice);
-        sendCancelInvoiceGateway.sendCancelInvoice(cancelInvoiceJson);
+    public void sendCancelDocument(DocumentToCancel cancelDocument) throws Exception {
+        String cancelDocumentJson = cancelDocumentToJson(cancelDocument);
+        sendCancelDocumentGateway.sendCancelDocument(cancelDocumentJson);
     }
 
-    private String cancelInvoiceToJson(InvoiceToCancel cancelInvoice) {
+    private String cancelDocumentToJson(DocumentToCancel cancelDocument) {
 
         LocalDate currentDate = LocalDate.now();
         String CurrenDateStr = currentDate.getDayOfMonth() + "-" + currentDate.getMonthValue() + "-"
                 + currentDate.getYear();
-        String cancelInvoiceJson = getInvoiceJson(cancelInvoice);
+        String cancelDocumentJson = getDocumentJson(cancelDocument);
 
         StringBuilder sb = new StringBuilder()
                 .append("{")
@@ -36,51 +36,51 @@ public class SendCancelInvoicePresenter implements SendCancelInvoiceOutputBounda
                 .append("\",")
                 .append("\"ventas\":")
                 .append("[")
-                .append(cancelInvoiceJson)
+                .append(cancelDocumentJson)
                 .append("]");
         return sb.toString();
     }
 
-    private String getInvoiceJson(InvoiceToCancel cancelInvoice) {
+    private String getDocumentJson(DocumentToCancel cancelDocument) {
 
         StringBuilder sb = new StringBuilder()
                 .append("{")
                 .append("\"comprobante\":\"")
-                .append(cancelInvoice.comprobante)
+                .append(cancelDocument.comprobante)
                 .append("\",")
                 .append("\"fecha\":\"")
-                .append(cancelInvoice.fecha.toString())
+                .append(cancelDocument.fecha.toString())
                 .append("\",")
                 .append("\"moneda\":\"")
-                .append(cancelInvoice.moneda.name())
+                .append(cancelDocument.moneda.name())
                 .append("\",")
                 .append("\"cliente\":\"")
-                .append(cancelInvoice.cliente)
+                .append(cancelDocument.cliente)
                 .append("\",")
                 .append("\"ruc\":\"")
-                .append(cancelInvoice.ruc)
+                .append(cancelDocument.ruc)
                 .append("\",")
                 .append("\"gravadas10\":\"")
-                .append(cancelInvoice.gravadas10.doubleValue())
+                .append(cancelDocument.gravadas10.doubleValue())
                 .append("\",")
                 .append("\"gravadas5\":\"")
-                .append(cancelInvoice.gravadas5.doubleValue())
+                .append(cancelDocument.gravadas5.doubleValue())
                 .append("\",")
                 .append("\"exentas\":\"")
-                .append(cancelInvoice.exentas.doubleValue())
+                .append(cancelDocument.exentas.doubleValue())
                 .append("\",")
                 .append("\"total\":\"")
-                .append(cancelInvoice.total.doubleValue())
+                .append(cancelDocument.total.doubleValue())
                 .append("\",")
                 .append("\"tipo\":\"")
-                .append(cancelInvoice.tipo.name())
+                .append(cancelDocument.tipo.name())
                 .append("\",")
                 .append("\"anulado\":\"")
-                .append(cancelInvoice.anulado);
-        if (!cancelInvoice.moneda.isLocal()) {
+                .append(cancelDocument.anulado);
+        if (!cancelDocument.moneda.isLocal()) {
             sb.append("\",")
                     .append("\"tipoCambio\":\"")
-                    .append(cancelInvoice.tipoCambio.doubleValue())
+                    .append(cancelDocument.tipoCambio.doubleValue())
                     .append("\"");
         }
         sb.append("}");

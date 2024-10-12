@@ -3,7 +3,7 @@ package com.elopez.mariscal.synchronizer.modules.sender.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class InvoiceToSend {
+public class DocumentToSend {
     public String comprobante;
     public LocalDate fecha;
     public Currency moneda;

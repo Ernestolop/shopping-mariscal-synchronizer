@@ -5,32 +5,32 @@ import java.time.LocalDate;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.Currency;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
-import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToCancel;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendCancelInvoiceInputBoundary;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendCancelInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToCancel;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.input.SendCancelDocumentInputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendCancelDocumentOutputBoundary;
 
-public class SendCancelInvoiceInteractor implements SendCancelInvoiceInputBoundary {
+public class SendCancelDocumentInteractor implements SendCancelDocumentInputBoundary {
 
-    private SendCancelInvoiceOutputBoundary sendCancelInvoiceOutputBoundary;
+    private SendCancelDocumentOutputBoundary sendCancelDocumentOutputBoundary;
 
-    public SendCancelInvoiceInteractor(SendCancelInvoiceOutputBoundary sendCancelInvoiceOutputBoundary) {
-        this.sendCancelInvoiceOutputBoundary = sendCancelInvoiceOutputBoundary;
+    public SendCancelDocumentInteractor(SendCancelDocumentOutputBoundary sendCancelDocumentOutputBoundary) {
+        this.sendCancelDocumentOutputBoundary = sendCancelDocumentOutputBoundary;
     }
 
     @Override
-    public void cancelInvoice(InvoiceToCancel invoice) throws Exception {
-        validateInvoice(invoice);
-        invoice.tipo = DocumentType.AFACT;
-        sendCancelInvoiceOutputBoundary.sendCancelInvoice(invoice);
+    public void cancelDocument(DocumentToCancel document) throws Exception {
+        validateDocument(document);
+        sendCancelDocumentOutputBoundary.sendCancelDocument(document);
     }
 
-    private void validateInvoice(InvoiceToCancel invoice) {
-        validateNumber(invoice.comprobante);
-        validateIssuedDate(invoice.fecha);
-        validateExchangeRate(invoice.moneda, invoice.tipoCambio);
-        validateCustomer(invoice.cliente, invoice.ruc);
-        validateAmounts(invoice.gravadas10, invoice.gravadas5, invoice.exentas, invoice.total);
-        validateCancelledDate(invoice.anulado);
+    private void validateDocument(DocumentToCancel document) {
+        validateNumber(document.comprobante);
+        validateDocumentType(document.tipo);
+        validateIssuedDate(document.fecha);
+        validateExchangeRate(document.moneda, document.tipoCambio);
+        validateCustomer(document.cliente, document.ruc);
+        validateAmounts(document.gravadas10, document.gravadas5, document.exentas, document.total);
+        validateCancelledDate(document.anulado);
     }
 
     private void validateNumber(String documentNumber) {
@@ -38,6 +38,14 @@ public class SendCancelInvoiceInteractor implements SendCancelInvoiceInputBounda
             throw new Error("El número de documento es requerido");
         } else if (!documentNumber.matches("\\d{3}-\\d{3}-\\d{7}")) {
             throw new Error("El número de documento no es válido");
+        }
+    }
+
+    private void validateDocumentType(DocumentType type) {
+        if (type == null) {
+            throw new Error("El tipo de documento es requerido");
+        } else if (!type.equals(DocumentType.AFACT) && !type.equals(DocumentType.ANCR)) {
+            throw new Error("El tipo de documento para anulacion es invalido");
         }
     }
 

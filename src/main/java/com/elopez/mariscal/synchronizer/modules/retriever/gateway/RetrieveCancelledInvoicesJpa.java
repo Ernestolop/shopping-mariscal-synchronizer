@@ -57,6 +57,7 @@ public class RetrieveCancelledInvoicesJpa implements RetrieveCancelledInvoicesOu
                 invoiceMap.put("total", (BigDecimal) invoice[6]);
                 invoiceMap.put("totalExtranjero", (BigDecimal) invoice[7]);
                 invoiceMap.put("comprobante", invoiceNumber((String) invoice[15]));
+                invoiceMap.put("anulado", dateToLocalDate((Date) invoice[16]));
                 result.add(invoiceMap);
             } catch (Exception e) {
                 logger.error("No se pudo procesar la factura anulada en la iteracion " + i + " con el id " + invoice[0]);

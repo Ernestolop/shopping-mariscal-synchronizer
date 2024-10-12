@@ -56,6 +56,7 @@ public class RetrieveCancelledCreditNotesJpa implements RetrieveCancelledCreditN
                 creditNoteMap.put("total", (BigDecimal) creditNote[6]);
                 creditNoteMap.put("totalExtranjero", (BigDecimal) creditNote[7]);
                 creditNoteMap.put("comprobante", creditNoteNumber((String) creditNote[15]));
+                creditNoteMap.put("anulado", dateToLocalDate((Date) creditNote[16]));
                 result.add(creditNoteMap);
             } catch (Exception e) {
                 logger.error("No se pudo procesar la nota de credito en la iteracion " + i + " con el id " + creditNote[0]);

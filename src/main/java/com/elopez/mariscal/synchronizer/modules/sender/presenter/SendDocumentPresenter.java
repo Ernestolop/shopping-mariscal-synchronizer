@@ -2,29 +2,29 @@ package com.elopez.mariscal.synchronizer.modules.sender.presenter;
 
 import java.time.LocalDate;
 
-import com.elopez.mariscal.synchronizer.modules.sender.entity.InvoiceToSend;
-import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendInvoiceOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToSend;
+import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendDocumentOutputBoundary;
 
-public class SendInvoicePresenter implements SendInvoiceOutputBoundary {
+public class SendDocumentPresenter implements SendDocumentOutputBoundary {
 
-    private SendInvoiceGateway sendInvoiceGateway;
+    private SendDocumentGateway sendDocumentGateway;
 
-    public SendInvoicePresenter(SendInvoiceGateway sendInvoiceGateway) {
-        this.sendInvoiceGateway = sendInvoiceGateway;
+    public SendDocumentPresenter(SendDocumentGateway sendDocumentGateway) {
+        this.sendDocumentGateway = sendDocumentGateway;
     }
 
     @Override
-    public void sendInvoice(InvoiceToSend invoice) throws Exception {
-        String invoiceJson = body(invoice);
-        sendInvoiceGateway.sendInvoice(invoiceJson);
+    public void sendDocument(DocumentToSend document) throws Exception {
+        String documentJson = body(document);
+        sendDocumentGateway.sendDocument(documentJson);
     }
 
-    private String body(InvoiceToSend invoice) {
+    private String body(DocumentToSend document) {
 
         LocalDate currentDate = LocalDate.now();
         String CurrenDateStr = currentDate.getDayOfMonth() + "-" + currentDate.getMonthValue() + "-"
                 + currentDate.getYear();
-        String invoiceJson = getInvoiceJson(invoice);
+        String documentJson = getDocumentJson(document);
 
         StringBuilder sb = new StringBuilder()
                 .append("{")
@@ -36,47 +36,47 @@ public class SendInvoicePresenter implements SendInvoiceOutputBoundary {
                 .append("\",")
                 .append("\"ventas\":")
                 .append("[")
-                .append(invoiceJson)
+                .append(documentJson)
                 .append("]");
         return sb.toString();
     }
 
-    private String getInvoiceJson(InvoiceToSend invoice) {
+    private String getDocumentJson(DocumentToSend document) {
         StringBuilder sb = new StringBuilder()
                 .append("{")
                 .append("\"comprobante\":\"")
-                .append(invoice.comprobante)
+                .append(document.comprobante)
                 .append("\",")
                 .append("\"fecha\":\"")
-                .append(invoice.fecha.toString())
+                .append(document.fecha.toString())
                 .append("\",")
                 .append("\"moneda\":\"")
-                .append(invoice.moneda.name())
+                .append(document.moneda.name())
                 .append("\",")
                 .append("\"cliente\":\"")
-                .append(invoice.cliente)
+                .append(document.cliente)
                 .append("\",")
                 .append("\"ruc\":\"")
-                .append(invoice.ruc)
+                .append(document.ruc)
                 .append("\",")
                 .append("\"gravadas10\":\"")
-                .append(invoice.gravadas10.doubleValue())
+                .append(document.gravadas10.doubleValue())
                 .append("\",")
                 .append("\"gravadas5\":\"")
-                .append(invoice.gravadas5.doubleValue())
+                .append(document.gravadas5.doubleValue())
                 .append("\",")
                 .append("\"exentas\":\"")
-                .append(invoice.exentas.doubleValue())
+                .append(document.exentas.doubleValue())
                 .append("\",")
                 .append("\"total\":\"")
-                .append(invoice.total.doubleValue())
+                .append(document.total.doubleValue())
                 .append("\",")
                 .append("\"tipo\":\"")
-                .append(invoice.tipo.name());
-        if (!invoice.moneda.isLocal()) {
+                .append(document.tipo.name());
+        if (!document.moneda.isLocal()) {
             sb.append("\",")
                     .append("\"tipoCambio\":\"")
-                    .append(invoice.tipoCambio.doubleValue())
+                    .append(document.tipoCambio.doubleValue())
                     .append("\"");
         }
         sb.append("}");
