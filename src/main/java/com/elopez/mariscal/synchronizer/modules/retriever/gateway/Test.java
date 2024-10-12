@@ -20,7 +20,7 @@ public class Test {
         RetrieveInvoicesJpa retrieveInvoicesJpa = context.getBean(RetrieveInvoicesJpa.class);
         
         try {
-            List<Map<String, Object>> result = retrieveInvoicesJpa.retrieveInvoices();
+            List<Map<String, Object>> result = retrieveInvoicesJpa.retrieve();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieveCancelledInvoicesOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieverOutputBoundary;
 
 @Service
-public class RetrieveCancelledInvoicesJpa implements RetrieveCancelledInvoicesOutputBoundary {
+public class RetrieveCancelledInvoicesJpa implements RetrieverOutputBoundary {
 
     Logger logger = LoggerFactory.getLogger(RetrieveInvoicesJpa.class);
 
@@ -30,7 +30,7 @@ public class RetrieveCancelledInvoicesJpa implements RetrieveCancelledInvoicesOu
     private String initialInvoiceNumber;
 
     @Override
-    public List<Map<String, Object>> retrieveCancelledInvoices() throws Exception {
+    public List<Map<String, Object>> retrieve() throws Exception {
         var invoices = invoiceRepository.findCancelledInvoices(initialInvoiceNumber);
         var mapInvoices = convertToMap(invoices);
         return mapInvoices;

@@ -3,8 +3,8 @@ package com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.outp
 import java.util.List;
 import java.util.Map;
 
-public interface RetrieveCreditNotesOutputBoundary {
+public interface RetrieverOutputBoundary {
 
-    List<Map<String, Object>> retrieveCreditNotes() throws Exception;
-
+    List<Map<String, Object>> retrieve() throws Exception;
+    
 }

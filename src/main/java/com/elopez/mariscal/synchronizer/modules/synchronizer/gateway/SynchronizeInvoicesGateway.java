@@ -13,9 +13,9 @@ import com.elopez.mariscal.synchronizer.modules.auditor.errors.DocumentNotFound;
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.DocumentGateway;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.AuditInteractor;
 
-import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveInvoicesController;
+import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveController;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveInvoicesJpa;
-import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieveInvoicesInteractor;
+import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieverInteractor;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToSend;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
@@ -34,10 +34,12 @@ public class SynchronizeInvoicesGateway implements synchronizerOutputBoundary {
         synchronizeInvoices(Invoices);
     }
 
-    private RetrieveInvoicesController getRetriever() {
+    private RetrieveController getRetriever() {
         var gateway = new RetrieveInvoicesJpa();
-        var interactor = new RetrieveInvoicesInteractor(gateway);
-        var retrieverController = new RetrieveInvoicesController(interactor);
+        var interactor = new RetrieverInteractor();
+        interactor.setInvoicesOutputBoundary(gateway);
+        var retrieverController = new RetrieveController();
+        retrieverController.setRetrieveInvoicesInputBoundary(interactor);
         return retrieverController;
     }
 

@@ -17,9 +17,9 @@ import com.elopez.mariscal.synchronizer.modules.auditor.errors.DocumentNotFound;
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.DocumentGateway;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.AuditInteractor;
 
-import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveCancelledInvoicesController;
+import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveController;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCancelledInvoicesJpa;
-import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieveCancelledInvoicesInteractor;
+import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieverInteractor;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToCancel;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
@@ -40,10 +40,12 @@ public class SynchronizeCancelledInvoicesGateway implements synchronizerOutputBo
         synchronizeInvoices(Invoices);
     }
 
-    private RetrieveCancelledInvoicesController getRetriever() {
+    private RetrieveController getRetriever() {
         var gateway = new RetrieveCancelledInvoicesJpa();
-        var interactor = new RetrieveCancelledInvoicesInteractor(gateway);
-        var retrieverController = new RetrieveCancelledInvoicesController(interactor);
+        var interactor = new RetrieverInteractor();
+        interactor.setCancelledInvoicesOutputBoundary(gateway);
+        var retrieverController = new RetrieveController();
+        retrieverController.setRetrieveCancelledInvoicesInputBoundary(interactor);
         return retrieverController;
     }
 

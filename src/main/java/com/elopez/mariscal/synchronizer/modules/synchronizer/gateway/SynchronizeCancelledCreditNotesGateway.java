@@ -17,9 +17,9 @@ import com.elopez.mariscal.synchronizer.modules.auditor.errors.DocumentNotFound;
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.DocumentGateway;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.AuditInteractor;
 
-import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveCancelledCreditNotesController;
+import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveController;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCancelledCreditNotesJpa;
-import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieveCancelledCreditNotesInteractor;
+import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieverInteractor;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToCancel;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
@@ -40,10 +40,12 @@ public class SynchronizeCancelledCreditNotesGateway implements synchronizerOutpu
         synchronizeCreditNotes(creditNotes);
     }
 
-    private RetrieveCancelledCreditNotesController getRetriever() {
+    private RetrieveController getRetriever() {
         var gateway = new RetrieveCancelledCreditNotesJpa();
-        var interactor = new RetrieveCancelledCreditNotesInteractor(gateway);
-        var retrieverController = new RetrieveCancelledCreditNotesController(interactor);
+        var interactor = new RetrieverInteractor();
+        interactor.setCancelledCreditNotesOutputBoundary(gateway);
+        var retrieverController = new RetrieveController();
+        retrieverController.setRetrieveCancelledCreditNotesInputBoundary(interactor);
         return retrieverController;
     }
 

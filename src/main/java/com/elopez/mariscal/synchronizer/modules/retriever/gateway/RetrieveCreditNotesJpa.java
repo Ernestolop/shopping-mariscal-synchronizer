@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieveCreditNotesOutputBoundary;
+import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieverOutputBoundary;
 
 @Service
-public class RetrieveCreditNotesJpa implements RetrieveCreditNotesOutputBoundary {
+public class RetrieveCreditNotesJpa implements RetrieverOutputBoundary {
 
     Logger logger = LoggerFactory.getLogger(RetrieveCreditNotesJpa.class);
 
@@ -30,7 +30,7 @@ public class RetrieveCreditNotesJpa implements RetrieveCreditNotesOutputBoundary
     private String initialCreditNoteNumber;
 
     @Override
-    public List<Map<String, Object>> retrieveCreditNotes() throws Exception {
+    public List<Map<String, Object>> retrieve() throws Exception {
         var creditNotes = creditNoteRepository.findNewCreditNotes(initialCreditNoteNumber);
         var mapCreditNotes = convertToMap(creditNotes);
         return mapCreditNotes;

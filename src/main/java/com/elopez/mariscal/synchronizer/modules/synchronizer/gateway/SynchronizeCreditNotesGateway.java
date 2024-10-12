@@ -13,9 +13,9 @@ import com.elopez.mariscal.synchronizer.modules.auditor.errors.DocumentNotFound;
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.DocumentGateway;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.AuditInteractor;
 
-import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveCreditNotesController;
+import com.elopez.mariscal.synchronizer.modules.retriever.controller.RetrieveController;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCreditNotesJpa;
-import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieveCreditNotesInteractor;
+import com.elopez.mariscal.synchronizer.modules.retriever.service.RetrieverInteractor;
 
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToSend;
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
@@ -34,10 +34,12 @@ public class SynchronizeCreditNotesGateway implements synchronizerOutputBoundary
         synchronizeCreditNotes(creditNotes);
     }
 
-    private RetrieveCreditNotesController getRetriever() {
+    private RetrieveController getRetriever() {
         var gateway = new RetrieveCreditNotesJpa();
-        var interactor = new RetrieveCreditNotesInteractor(gateway);
-        var retrieverController = new RetrieveCreditNotesController(interactor);
+        var interactor = new RetrieverInteractor();
+        interactor.setCreditNotesOutputBoundary(gateway);
+        var retrieverController = new RetrieveController();
+        retrieverController.setRetrieveCreditNotesInputBoundary(interactor);
         return retrieverController;
     }
 
@@ -50,7 +52,8 @@ public class SynchronizeCreditNotesGateway implements synchronizerOutputBoundary
         }
     }
 
-    private void synchronizeCreditNote(Map<String, Object> creditNote, SendDocumentController sender, AuditController auditor)
+    private void synchronizeCreditNote(Map<String, Object> creditNote, SendDocumentController sender,
+            AuditController auditor)
             throws Exception {
         var documentToAudit = convertToDocumentToAudit(creditNote);
         try {
