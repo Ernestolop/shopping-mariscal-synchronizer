@@ -3,7 +3,7 @@ package com.elopez.mariscal.synchronizer.modules.synchronizer.gateway;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -35,16 +35,19 @@ public class SynchronizeInvoicesGateway implements synchronizerOutputBoundary {
     private RetrieveInvoicesJpa retrieveInvoicesJpa;
     private DocumentGateway documentGateway;
 
+    @Value("${mariscal.contract.number}")
+    private String contractNumber;
+
+    public SynchronizeInvoicesGateway(RetrieveInvoicesJpa retrieveInvoicesJpa, DocumentGateway documentGateway) {
+        this.retrieveInvoicesJpa = retrieveInvoicesJpa;
+        this.documentGateway = documentGateway;
+    }
+
     @Override
     public void synchronize() throws Exception {
         var retriever = getRetriever();
         var Invoices = retriever.retrieveInvoices();
         synchronizeInvoices(Invoices);
-    }
-
-    public SynchronizeInvoicesGateway(RetrieveInvoicesJpa retrieveInvoicesJpa, DocumentGateway documentGateway) {
-        this.retrieveInvoicesJpa = retrieveInvoicesJpa;
-        this.documentGateway = documentGateway;
     }
 
     private RetrieveController getRetriever() {
@@ -79,7 +82,7 @@ public class SynchronizeInvoicesGateway implements synchronizerOutputBoundary {
 
     private SendDocumentController getSender() {
         var gateway = new SendDocumentMariscal();
-        var presenter = new SendDocumentPresenter(gateway);
+        var presenter = new SendDocumentPresenter(gateway, contractNumber);
         var interactor = new SendDocumentInteractor(presenter);
         var controller = new SendDocumentController(interactor);
         return controller;

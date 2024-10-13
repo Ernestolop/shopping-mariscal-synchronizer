@@ -8,9 +8,11 @@ import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.S
 public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoundary {
 
     private SendCancelDocumentGateway sendCancelDocumentGateway;
+    private String contractNumber;
 
-    public SendCancelDocumentPresenter(SendCancelDocumentGateway sendCancelDocumentGateway) {
+    public SendCancelDocumentPresenter(SendCancelDocumentGateway sendCancelDocumentGateway, String contractNumber) {
         this.sendCancelDocumentGateway = sendCancelDocumentGateway;
+        this.contractNumber = contractNumber;
     }
 
     @Override
@@ -29,7 +31,9 @@ public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoun
         StringBuilder sb = new StringBuilder()
                 .append("{")
                 .append("\"contrato\":\"")
-                .append("C0000001218")
+                .append("\"")
+                .append(contractNumber)
+                .append("\"")
                 .append("\",")
                 .append("\"fecha\":\"")
                 .append(CurrenDateStr)

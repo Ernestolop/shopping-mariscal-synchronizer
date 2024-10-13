@@ -2,6 +2,9 @@ package com.elopez.mariscal.synchronizer.modules.synchronizer.gateway;
 
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
@@ -27,6 +30,18 @@ import com.elopez.mariscal.synchronizer.modules.sender.service.SendDocumentInter
 
 public class SynchronizeCreditNotesGateway implements synchronizerOutputBoundary {
 
+    private RetrieveCreditNotesJpa retrieveCreditNotesJpa;
+    private DocumentGateway documentGateway;
+
+    @Value("${mariscal.contract.number}")
+    private String contractNumber;
+
+    public SynchronizeCreditNotesGateway(RetrieveCreditNotesJpa retrieveCreditNotesJpa,
+            DocumentGateway documentGateway) {
+        this.retrieveCreditNotesJpa = retrieveCreditNotesJpa;
+        this.documentGateway = documentGateway;
+    }
+
     @Override
     public void synchronize() throws Exception {
         var retriever = getRetriever();
@@ -35,9 +50,8 @@ public class SynchronizeCreditNotesGateway implements synchronizerOutputBoundary
     }
 
     private RetrieveController getRetriever() {
-        var gateway = new RetrieveCreditNotesJpa();
         var interactor = new RetrieverInteractor();
-        interactor.setCreditNotesOutputBoundary(gateway);
+        interactor.setCreditNotesOutputBoundary(retrieveCreditNotesJpa);
         var retrieverController = new RetrieveController();
         retrieverController.setRetrieveCreditNotesInputBoundary(interactor);
         return retrieverController;
@@ -68,15 +82,14 @@ public class SynchronizeCreditNotesGateway implements synchronizerOutputBoundary
 
     private SendDocumentController getSender() {
         var gateway = new SendDocumentMariscal();
-        var presenter = new SendDocumentPresenter(gateway);
+        var presenter = new SendDocumentPresenter(gateway, contractNumber);
         var interactor = new SendDocumentInteractor(presenter);
         var controller = new SendDocumentController(interactor);
         return controller;
     }
 
     private AuditController getAuditor() {
-        var gateway = new DocumentGateway();
-        var interactor = new AuditInteractor(gateway);
+        var interactor = new AuditInteractor(documentGateway);
         var controller = new AuditController(interactor);
         return controller;
     }

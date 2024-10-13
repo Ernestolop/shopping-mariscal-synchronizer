@@ -3,12 +3,14 @@ package com.elopez.mariscal.synchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.DocumentGateway;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveInvoicesJpa;
+import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCancelledInvoicesJpa;
+import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCreditNotesJpa;
+import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCancelledCreditNotesJpa;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.controller.synchronizerController;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCancelledCreditNotesGateway;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCancelledInvoicesGateway;
@@ -21,25 +23,19 @@ public class Scheduler {
 
     @Autowired
     private RetrieveInvoicesJpa retrieveInvoicesJpa;
+    @Autowired
+    private RetrieveCreditNotesJpa retrieveCreditNotesJpa;
+    @Autowired
+    private RetrieveCancelledInvoicesJpa retrieveCancelledInvoicesJpa;
+    @Autowired
+    private RetrieveCancelledCreditNotesJpa retrieveCancelledCreditNotesJpa;
 
     @Autowired
     private DocumentGateway documentGateway;
 
     private Logger logger = LoggerFactory.getLogger(Scheduler.class);
 
-    @Value("${invoices.synchronization.cron}")
-    private String invoicesSynchronizationCron;
-
-    @Value("${credit.notes.synchronization.cron}")
-    private String creditNotesSynchronizationCron;
-
-    @Value("${cancelled.invoice.synchronization.cron}")
-    private String cancelledInvoicesSynchronizationCron;
-
-    @Value("${cancelled.credit.notes.synchronization.cron}")
-    private String cancelledCreditNotesSynchronizationCron;
-
-    @Scheduled(cron = "${invoices.synchronization.cron}")
+    @Scheduled(cron = "${invoices.cron}")
     public void synchronizeInvoices() {
         var synchronizer = getInvoicesSynchronizer();
         try {
@@ -49,7 +45,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "${credit.notes.synchronization.cron}")
+    @Scheduled(cron = "${credit.notes.cron}")
     public void synchronizeCreditNotes() {
         var synchronizer = getCreditNotesSynchronizer();
         try {
@@ -59,7 +55,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "${cancelled.invoice.synchronization.cron}")
+    @Scheduled(cron = "${cancelled.invoice.cron}")
     public void synchronizeCancelledInvoices() {
         var synchronizer = getCancelledInvoicesSynchronizer();
         try {
@@ -69,7 +65,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "${cancelled.credit.notes.synchronization.cron}")
+    @Scheduled(cron = "${cancelled.credit.notes.cron}")
     public void synchronizeCancelledCreditNotes() {
         var synchronizer = getCancelledCreditNotesSynchronizer();
         try {
@@ -88,7 +84,7 @@ public class Scheduler {
     }
 
     private synchronizerController getCreditNotesSynchronizer() {
-        var gateway = new SynchronizeCreditNotesGateway();
+        var gateway = new SynchronizeCreditNotesGateway(retrieveCreditNotesJpa, documentGateway);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeCreditNotesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);
@@ -96,7 +92,7 @@ public class Scheduler {
     }
 
     private synchronizerController getCancelledInvoicesSynchronizer() {
-        var gateway = new SynchronizeCancelledInvoicesGateway();
+        var gateway = new SynchronizeCancelledInvoicesGateway(retrieveCancelledInvoicesJpa, documentGateway);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeCancelledInvoicesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);
@@ -104,7 +100,7 @@ public class Scheduler {
     }
 
     private synchronizerController getCancelledCreditNotesSynchronizer() {
-        var gateway = new SynchronizeCancelledCreditNotesGateway();
+        var gateway = new SynchronizeCancelledCreditNotesGateway(retrieveCancelledCreditNotesJpa, documentGateway);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeCancelledCreditNotesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);

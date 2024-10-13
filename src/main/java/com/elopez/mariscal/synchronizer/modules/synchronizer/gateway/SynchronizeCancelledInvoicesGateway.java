@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -31,6 +32,18 @@ import com.elopez.mariscal.synchronizer.modules.sender.service.SendCancelDocumen
 
 public class SynchronizeCancelledInvoicesGateway implements synchronizerOutputBoundary {
 
+    private RetrieveCancelledInvoicesJpa retrieveCancelledInvoicesJpa;
+    private DocumentGateway documentGateway;
+
+    @Value("${mariscal.contract.number}")
+    private String contractNumber;
+
+    public SynchronizeCancelledInvoicesGateway(RetrieveCancelledInvoicesJpa retrieveCancelledInvoicesJpa,
+            DocumentGateway documentGateway) {
+        this.retrieveCancelledInvoicesJpa = retrieveCancelledInvoicesJpa;
+        this.documentGateway = documentGateway;
+    }
+
     Logger logger = LoggerFactory.getLogger(SynchronizeCancelledInvoicesGateway.class);
 
     @Override
@@ -41,9 +54,8 @@ public class SynchronizeCancelledInvoicesGateway implements synchronizerOutputBo
     }
 
     private RetrieveController getRetriever() {
-        var gateway = new RetrieveCancelledInvoicesJpa();
         var interactor = new RetrieverInteractor();
-        interactor.setCancelledInvoicesOutputBoundary(gateway);
+        interactor.setCancelledInvoicesOutputBoundary(retrieveCancelledInvoicesJpa);
         var retrieverController = new RetrieveController();
         retrieverController.setRetrieveCancelledInvoicesInputBoundary(interactor);
         return retrieverController;
@@ -79,15 +91,14 @@ public class SynchronizeCancelledInvoicesGateway implements synchronizerOutputBo
 
     private SendCancelDocumentController getSender() {
         var gateway = new SendCancelDocumentMariscal();
-        var presenter = new SendCancelDocumentPresenter(gateway);
+        var presenter = new SendCancelDocumentPresenter(gateway, contractNumber);
         var interactor = new SendCancelDocumentInteractor(presenter);
         var controller = new SendCancelDocumentController(interactor);
         return controller;
     }
 
     private AuditController getAuditor() {
-        var gateway = new DocumentGateway();
-        var interactor = new AuditInteractor(gateway);
+        var interactor = new AuditInteractor(documentGateway);
         var controller = new AuditController(interactor);
         return controller;
     }

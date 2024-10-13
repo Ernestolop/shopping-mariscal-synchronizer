@@ -8,9 +8,11 @@ import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.S
 public class SendDocumentPresenter implements SendDocumentOutputBoundary {
 
     private SendDocumentGateway sendDocumentGateway;
+    private String contractNumber;
 
-    public SendDocumentPresenter(SendDocumentGateway sendDocumentGateway) {
+    public SendDocumentPresenter(SendDocumentGateway sendDocumentGateway, String contractNumber) {
         this.sendDocumentGateway = sendDocumentGateway;
+        this.contractNumber = contractNumber;
     }
 
     @Override
@@ -29,7 +31,9 @@ public class SendDocumentPresenter implements SendDocumentOutputBoundary {
         StringBuilder sb = new StringBuilder()
                 .append("{")
                 .append("\"contrato\":\"")
-                .append("C0000001218")
+                .append("\"")
+                .append(contractNumber)
+                .append("\"")
                 .append("\",")
                 .append("\"fecha\":\"")
                 .append(CurrenDateStr)
