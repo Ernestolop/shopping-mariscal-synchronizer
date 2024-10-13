@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.math.BigDecimal;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.elopez.mariscal.synchronizer.modules.synchronizer.service.output.synchronizerOutputBoundary;
 import com.elopez.mariscal.synchronizer.modules.auditor.controller.AuditController;
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocument;
@@ -28,11 +26,9 @@ public abstract class SynchronizeCancelledDocumentsGateway implements synchroniz
 
     protected abstract DocumentToCancel mapToDocumentToSend(Map<String, Object> document);
 
-    @Value("${mariscal.contract.number}")
-    private String contractNumber;
+    protected abstract String getContractNumber();
 
-    @Value("${auditor.sent.attempts}")
-    private int maxSentAttempts;
+    protected abstract int getMaxSentAttempts();
 
     private final AuditGateway documentGateway;
 
@@ -59,23 +55,32 @@ public abstract class SynchronizeCancelledDocumentsGateway implements synchroniz
             AuditController auditController) throws Exception {
         AuditDocument auditDocument = mapToAuditDocument(document);
 
-        if (shouldRetryDocument(auditDocument, auditController)) {
-            synchronizeDocument(document, senderController, auditController, auditDocument, true);
-        } else {
-            synchronizeDocument(document, senderController, auditController, auditDocument, false);
+        switch (shouldRetryDocument(auditDocument, auditController)) {
+            case "RETRY":
+                synchronizeDocument(document, senderController, auditController, auditDocument, true);
+                break;
+            case "CREATE":
+                synchronizeDocument(document, senderController, auditController, auditDocument, false);
+                break;
+            case "IGNORE":
+                break;
         }
     }
 
-    private boolean shouldRetryDocument(AuditDocument auditDocument, AuditController auditController) throws Exception {
+    private String shouldRetryDocument(AuditDocument auditDocument, AuditController auditController) throws Exception {
         try {
             Map<String, Object> documentInfo = auditController.findDocument(auditDocument);
-            boolean hasError = (boolean) documentInfo.get("hasError");
+            boolean sentSuccess = (boolean) documentInfo.get("sentSuccess");
             int sentAttempts = (int) documentInfo.get("sentAttempts");
 
-            return hasError && sentAttempts < maxSentAttempts;
+            if (!sentSuccess && sentAttempts < getMaxSentAttempts()) {
+                return "RETRY";
+            }
+            return "IGNORE";
         } catch (DocumentNotFound e) {
-            return false;
+            return "CREATE";
         }
+
     }
 
     private void synchronizeDocument(Map<String, Object> document, SendCancelDocumentController senderController,
@@ -102,7 +107,7 @@ public abstract class SynchronizeCancelledDocumentsGateway implements synchroniz
 
     private SendCancelDocumentController initializeSenderController() {
         SendCancelDocumentMariscal sendGateway = new SendCancelDocumentMariscal();
-        SendCancelDocumentPresenter presenter = new SendCancelDocumentPresenter(sendGateway, contractNumber);
+        SendCancelDocumentPresenter presenter = new SendCancelDocumentPresenter(sendGateway, getContractNumber());
         SendCancelDocumentInteractor interactor = new SendCancelDocumentInteractor(presenter);
         return new SendCancelDocumentController(interactor);
     }

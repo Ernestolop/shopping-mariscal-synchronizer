@@ -3,6 +3,7 @@ package com.elopez.mariscal.synchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,12 @@ import com.elopez.mariscal.synchronizer.modules.synchronizer.service.synchronize
 
 @Component
 public class Scheduler {
+
+    @Value("${mariscal.contract.number}")
+    protected String contractNumber;
+
+    @Value("${auditor.attempts}")
+    protected int maxSentAttempts;
 
     @Autowired
     private RetrieveInvoicesJpa retrieveInvoicesJpa;
@@ -45,38 +52,38 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "${credit.notes.cron}")
-    public void synchronizeCreditNotes() {
-        var synchronizer = getCreditNotesSynchronizer();
-        try {
-            synchronizer.synchronizeCreditNotes();
-        } catch (Exception e) {
-            logger.error("Error synchronizing credit notes", e);
-        }
-    }
+    // @Scheduled(cron = "${credit.notes.cron}")
+    // public void synchronizeCreditNotes() {
+    // var synchronizer = getCreditNotesSynchronizer();
+    // try {
+    // synchronizer.synchronizeCreditNotes();
+    // } catch (Exception e) {
+    // logger.error("Error synchronizing credit notes", e);
+    // }
+    // }
 
-    @Scheduled(cron = "${cancelled.invoice.cron}")
-    public void synchronizeCancelledInvoices() {
-        var synchronizer = getCancelledInvoicesSynchronizer();
-        try {
-            synchronizer.synchronizeCancelledInvoices();
-        } catch (Exception e) {
-            logger.error("Error synchronizing cancelled invoices", e);
-        }
-    }
+    // @Scheduled(cron = "${cancelled.invoice.cron}")
+    // public void synchronizeCancelledInvoices() {
+    // var synchronizer = getCancelledInvoicesSynchronizer();
+    // try {
+    // synchronizer.synchronizeCancelledInvoices();
+    // } catch (Exception e) {
+    // logger.error("Error synchronizing cancelled invoices", e);
+    // }
+    // }
 
-    @Scheduled(cron = "${cancelled.credit.notes.cron}")
-    public void synchronizeCancelledCreditNotes() {
-        var synchronizer = getCancelledCreditNotesSynchronizer();
-        try {
-            synchronizer.synchronizeCancelledCreditNotes();
-        } catch (Exception e) {
-            logger.error("Error synchronizing cancelled credit notes", e);
-        }
-    }
+    // @Scheduled(cron = "${cancelled.credit.notes.cron}")
+    // public void synchronizeCancelledCreditNotes() {
+    // var synchronizer = getCancelledCreditNotesSynchronizer();
+    // try {
+    // synchronizer.synchronizeCancelledCreditNotes();
+    // } catch (Exception e) {
+    // logger.error("Error synchronizing cancelled credit notes", e);
+    // }
+    // }
 
     private synchronizerController getInvoicesSynchronizer() {
-        var gateway = new SynchronizeInvoicesGateway(retrieveInvoicesJpa, documentGateway);
+        var gateway = new SynchronizeInvoicesGateway(retrieveInvoicesJpa, documentGateway, contractNumber, maxSentAttempts);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeInvoicesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);
@@ -84,7 +91,7 @@ public class Scheduler {
     }
 
     private synchronizerController getCreditNotesSynchronizer() {
-        var gateway = new SynchronizeCreditNotesGateway(retrieveCreditNotesJpa, documentGateway);
+        var gateway = new SynchronizeCreditNotesGateway(retrieveCreditNotesJpa, documentGateway, contractNumber, maxSentAttempts);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeCreditNotesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);
@@ -92,7 +99,7 @@ public class Scheduler {
     }
 
     private synchronizerController getCancelledInvoicesSynchronizer() {
-        var gateway = new SynchronizeCancelledInvoicesGateway(retrieveCancelledInvoicesJpa, documentGateway);
+        var gateway = new SynchronizeCancelledInvoicesGateway(retrieveCancelledInvoicesJpa, documentGateway, contractNumber, maxSentAttempts);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeCancelledInvoicesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);
@@ -100,7 +107,7 @@ public class Scheduler {
     }
 
     private synchronizerController getCancelledCreditNotesSynchronizer() {
-        var gateway = new SynchronizeCancelledCreditNotesGateway(retrieveCancelledCreditNotesJpa, documentGateway);
+        var gateway = new SynchronizeCancelledCreditNotesGateway(retrieveCancelledCreditNotesJpa, documentGateway, contractNumber, maxSentAttempts);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeCancelledCreditNotesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);

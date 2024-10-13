@@ -2,7 +2,6 @@ package com.elopez.mariscal.synchronizer.modules.synchronizer.gateway;
 
 import java.util.List;
 import java.util.Map;
-import java.time.LocalDate;
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -29,11 +28,9 @@ public abstract class SynchronizeDocumentsGateway implements synchronizerOutputB
 
     protected abstract DocumentToSend mapToDocumentToSend(Map<String, Object> document);
 
-    @Value("${mariscal.contract.number}")
-    private String contractNumber;
+    protected abstract String getContractNumber();
 
-    @Value("${auditor.sent.attempts}")
-    private int maxSentAttempts;
+    protected abstract int getMaxSentAttempts();
 
     private final AuditGateway documentGateway;
 
@@ -60,22 +57,30 @@ public abstract class SynchronizeDocumentsGateway implements synchronizerOutputB
             AuditController auditController) throws Exception {
         AuditDocument auditDocument = mapToAuditDocument(document);
 
-        if (shouldRetryDocument(auditDocument, auditController)) {
-            synchronizeDocument(document, senderController, auditController, auditDocument, true);
-        } else {
-            synchronizeDocument(document, senderController, auditController, auditDocument, false);
+        switch (shouldRetryDocument(auditDocument, auditController)) {
+            case "RETRY":
+                synchronizeDocument(document, senderController, auditController, auditDocument, true);
+                break;
+            case "CREATE":
+                synchronizeDocument(document, senderController, auditController, auditDocument, false);
+                break;
+            case "IGNORE":
+                break;
         }
     }
 
-    private boolean shouldRetryDocument(AuditDocument auditDocument, AuditController auditController) throws Exception {
+    private String shouldRetryDocument(AuditDocument auditDocument, AuditController auditController) throws Exception {
         try {
             Map<String, Object> documentInfo = auditController.findDocument(auditDocument);
-            boolean hasError = (boolean) documentInfo.get("hasError");
+            boolean sentSuccess = (boolean) documentInfo.get("sentSuccess");
             int sentAttempts = (int) documentInfo.get("sentAttempts");
 
-            return hasError && sentAttempts < maxSentAttempts;
+            if (!sentSuccess && sentAttempts < getMaxSentAttempts()) {
+                return "RETRY";
+            }
+            return "IGNORE";
         } catch (DocumentNotFound e) {
-            return false;
+            return "CREATE";
         }
     }
 
@@ -103,7 +108,7 @@ public abstract class SynchronizeDocumentsGateway implements synchronizerOutputB
 
     private SendDocumentController initializeSenderController() {
         SendDocumentMariscal sendGateway = new SendDocumentMariscal();
-        SendDocumentPresenter presenter = new SendDocumentPresenter(sendGateway, contractNumber);
+        SendDocumentPresenter presenter = new SendDocumentPresenter(sendGateway, getContractNumber());
         SendDocumentInteractor interactor = new SendDocumentInteractor(presenter);
         return new SendDocumentController(interactor);
     }

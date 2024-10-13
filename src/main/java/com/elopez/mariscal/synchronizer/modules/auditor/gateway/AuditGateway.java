@@ -21,10 +21,10 @@ public class AuditGateway
     @Autowired
     private AuditRepository documentRepository;
 
-    @Value("${auditor.sent.attempts}")
+    @Value("${auditor.attempts}")
     private int sentAttempts;
 
-    @Value("${auditor.canceled.attempts}")
+    @Value("${auditor.attempts}")
     private int canceledAttempts;
 
     @Override

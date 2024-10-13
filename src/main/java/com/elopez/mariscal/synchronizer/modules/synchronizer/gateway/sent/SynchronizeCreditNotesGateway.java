@@ -4,8 +4,6 @@ import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Component;
-
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocument;
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocumentType;
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.AuditGateway;
@@ -15,14 +13,29 @@ import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeDocumentsGateway;
 import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieverOutputBoundary;
 
-@Component
 public class SynchronizeCreditNotesGateway extends SynchronizeDocumentsGateway {
 
+    protected String contractNumber;
+
+    protected int maxSentAttempts;
+    
     private final RetrieveCreditNotesJpa retrieveCreditNotesJpa;
 
-    public SynchronizeCreditNotesGateway(RetrieveCreditNotesJpa retrieveCreditNotesJpa, AuditGateway documentGateway) {
+    public SynchronizeCreditNotesGateway(RetrieveCreditNotesJpa retrieveCreditNotesJpa, AuditGateway documentGateway, String contractNumber, int maxSentAttempts) {
         super(documentGateway);
         this.retrieveCreditNotesJpa = retrieveCreditNotesJpa;
+        this.contractNumber = contractNumber;
+        this.maxSentAttempts = maxSentAttempts;
+    }
+
+    @Override
+    protected String getContractNumber() {
+        return contractNumber;
+    }
+
+    @Override
+    protected int getMaxSentAttempts() {
+        return maxSentAttempts;
     }
 
     @Override
@@ -33,7 +46,7 @@ public class SynchronizeCreditNotesGateway extends SynchronizeDocumentsGateway {
     @Override
     protected AuditDocument mapToAuditDocument(Map<String, Object> document) {
         AuditDocument auditDocument = new AuditDocument();
-        auditDocument.id = document.get("comprobante").toString();
+        auditDocument.id = document.get("id").toString();
         auditDocument.type = AuditDocumentType.NCR;
         return auditDocument;
     }

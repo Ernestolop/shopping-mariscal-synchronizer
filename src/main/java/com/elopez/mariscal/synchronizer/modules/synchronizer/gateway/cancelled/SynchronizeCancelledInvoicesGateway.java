@@ -4,8 +4,6 @@ import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Component;
-
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocument;
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocumentType;
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.AuditGateway;
@@ -15,15 +13,30 @@ import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCancelledDocumentsGateway;
 import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieverOutputBoundary;
 
-@Component
 public class SynchronizeCancelledInvoicesGateway extends SynchronizeCancelledDocumentsGateway {
+
+    protected String contractNumber;
+
+    protected int maxSentAttempts;
 
     private final RetrieveCancelledInvoicesJpa retrieveCancelledInvoicesJpa;
 
     public SynchronizeCancelledInvoicesGateway(RetrieveCancelledInvoicesJpa retrieveCancelledInvoicesJpa,
-            AuditGateway documentGateway) {
+            AuditGateway documentGateway, String contractNumber, int maxSentAttempts) {
         super(documentGateway);
         this.retrieveCancelledInvoicesJpa = retrieveCancelledInvoicesJpa;
+        this.contractNumber = contractNumber;
+        this.maxSentAttempts = maxSentAttempts;
+    }
+
+    @Override
+    protected String getContractNumber() {
+        return contractNumber;
+    }
+
+    @Override
+    protected int getMaxSentAttempts() {
+        return maxSentAttempts;
     }
 
     @Override

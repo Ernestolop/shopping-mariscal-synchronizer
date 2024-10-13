@@ -13,14 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieverOutputBoundary;
 
+@Service
 public abstract class RetrieveCancelledDocumentsJpa implements RetrieverOutputBoundary {
 
     Logger logger = LoggerFactory.getLogger(RetrieveCancelledDocumentsJpa.class);
 
-    @Value("${retriever.initial.invoice.number}")
+    @Value("${retriever.initial.document.number}")
     protected String initialDocumentNumber;
 
     protected abstract List<Object[]> findCancelledDocuments(String initialDocumentNumber);

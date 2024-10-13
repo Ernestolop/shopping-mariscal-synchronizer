@@ -21,9 +21,11 @@ public class SendDocumentMariscal implements SendDocumentGateway {
     public void sendDocument(String document) throws Exception {
 
         logger.info("Enviando documento a Mariscal");
-        logger.debug("Documento: " + document);
+        logger.info("Documento: " + document);
         HttpResponse<String> response = HttpClientMariscal.post(ENDPOINT_REQUEST, document, token);
         if (response.statusCode() != 200) {
+            logger.error("Error al enviar el documento - Status Code: " + response.statusCode() + " - Mensaje: "
+                    + response.body());
             throw new Exception("Error al enviar el documento - Status Code: " + response.statusCode() + " - Mensaje: "
                     + response.body());
         }

@@ -4,8 +4,6 @@ import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Component;
-
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocument;
 import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocumentType;
 import com.elopez.mariscal.synchronizer.modules.auditor.gateway.AuditGateway;
@@ -15,14 +13,29 @@ import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentType;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeDocumentsGateway;
 import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.output.RetrieverOutputBoundary;
 
-@Component
 public class SynchronizeInvoicesGateway extends SynchronizeDocumentsGateway {
+
+    private String contractNumber;
+
+    private int maxSentAttempts;
 
     private final RetrieveInvoicesJpa retrieveInvoicesJpa;
 
-    public SynchronizeInvoicesGateway(RetrieveInvoicesJpa retrieveInvoicesJpa, AuditGateway documentGateway) {
+    public SynchronizeInvoicesGateway(RetrieveInvoicesJpa retrieveInvoicesJpa, AuditGateway documentGateway, String contractNumber, int maxSentAttempts) {
         super(documentGateway);
         this.retrieveInvoicesJpa = retrieveInvoicesJpa;
+        this.contractNumber = contractNumber;
+        this.maxSentAttempts = maxSentAttempts;
+    }
+
+    @Override
+    protected String getContractNumber() {
+        return contractNumber;
+    }
+
+    @Override
+    protected int getMaxSentAttempts() {
+        return maxSentAttempts;
     }
 
     @Override
@@ -33,7 +46,7 @@ public class SynchronizeInvoicesGateway extends SynchronizeDocumentsGateway {
     @Override
     protected AuditDocument mapToAuditDocument(Map<String, Object> document) {
         AuditDocument auditDocument = new AuditDocument();
-        auditDocument.id = document.get("comprobante").toString();
+        auditDocument.id = document.get("id").toString();
         auditDocument.type = AuditDocumentType.FAC;
         return auditDocument;
     }
