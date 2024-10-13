@@ -1,5 +1,7 @@
 package com.elopez.mariscal.synchronizer.configs;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,9 @@ public class AuditorDatasourceJpaConfig {
                 .dataSource(dataSource)
                 .packages("com.elopez.mariscal.synchronizer.modules.auditor.gateway")
                 .persistenceUnit("auditor")
+                .properties(Map.of(
+                        "hibernate.hbm2ddl.auto", "update",
+                        "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect"))
                 .build();
     }
 

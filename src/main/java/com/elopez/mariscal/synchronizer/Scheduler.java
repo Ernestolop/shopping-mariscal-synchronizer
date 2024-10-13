@@ -2,10 +2,13 @@ package com.elopez.mariscal.synchronizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.elopez.mariscal.synchronizer.modules.auditor.gateway.DocumentGateway;
+import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveInvoicesJpa;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.controller.synchronizerController;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCancelledCreditNotesGateway;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCancelledInvoicesGateway;
@@ -15,6 +18,12 @@ import com.elopez.mariscal.synchronizer.modules.synchronizer.service.synchronize
 
 @Component
 public class Scheduler {
+
+    @Autowired
+    private RetrieveInvoicesJpa retrieveInvoicesJpa;
+
+    @Autowired
+    private DocumentGateway documentGateway;
 
     private Logger logger = LoggerFactory.getLogger(Scheduler.class);
 
@@ -71,7 +80,7 @@ public class Scheduler {
     }
 
     private synchronizerController getInvoicesSynchronizer() {
-        var gateway = new SynchronizeInvoicesGateway();
+        var gateway = new SynchronizeInvoicesGateway(retrieveInvoicesJpa, documentGateway);
         var interactor = new synchronizerInteractor();
         interactor.setSynchronizeInvoicesOutputBoundary(gateway);
         var synchronizerController = new synchronizerController(interactor);

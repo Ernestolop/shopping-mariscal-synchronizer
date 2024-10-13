@@ -2,6 +2,10 @@ package com.elopez.mariscal.synchronizer.modules.synchronizer.gateway;
 
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
@@ -25,7 +29,11 @@ import com.elopez.mariscal.synchronizer.modules.sender.gateway.SendDocumentMaris
 import com.elopez.mariscal.synchronizer.modules.sender.presenter.SendDocumentPresenter;
 import com.elopez.mariscal.synchronizer.modules.sender.service.SendDocumentInteractor;
 
+@Component
 public class SynchronizeInvoicesGateway implements synchronizerOutputBoundary {
+
+    private RetrieveInvoicesJpa retrieveInvoicesJpa;
+    private DocumentGateway documentGateway;
 
     @Override
     public void synchronize() throws Exception {
@@ -34,10 +42,14 @@ public class SynchronizeInvoicesGateway implements synchronizerOutputBoundary {
         synchronizeInvoices(Invoices);
     }
 
+    public SynchronizeInvoicesGateway(RetrieveInvoicesJpa retrieveInvoicesJpa, DocumentGateway documentGateway) {
+        this.retrieveInvoicesJpa = retrieveInvoicesJpa;
+        this.documentGateway = documentGateway;
+    }
+
     private RetrieveController getRetriever() {
-        var gateway = new RetrieveInvoicesJpa();
         var interactor = new RetrieverInteractor();
-        interactor.setInvoicesOutputBoundary(gateway);
+        interactor.setInvoicesOutputBoundary(retrieveInvoicesJpa);
         var retrieverController = new RetrieveController();
         retrieverController.setRetrieveInvoicesInputBoundary(interactor);
         return retrieverController;
@@ -74,15 +86,14 @@ public class SynchronizeInvoicesGateway implements synchronizerOutputBoundary {
     }
 
     private AuditController getAuditor() {
-        var gateway = new DocumentGateway();
-        var interactor = new AuditInteractor(gateway);
+        var interactor = new AuditInteractor(documentGateway);
         var controller = new AuditController(interactor);
         return controller;
     }
 
     private Document convertToDocumentToAudit(Map<String, Object> invoice) {
         var document = new Document();
-        document.id = (String) invoice.get("id");
+        document.id = invoice.get("id").toString();
         document.type = com.elopez.mariscal.synchronizer.modules.auditor.entity.DocumentType.FAC;
         return document;
     }

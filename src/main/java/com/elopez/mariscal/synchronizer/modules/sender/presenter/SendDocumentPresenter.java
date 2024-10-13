@@ -37,18 +37,23 @@ public class SendDocumentPresenter implements SendDocumentOutputBoundary {
                 .append("\"ventas\":")
                 .append("[")
                 .append(documentJson)
-                .append("]");
+                .append("]")
+                .append("}");
         return sb.toString();
     }
 
     private String getDocumentJson(DocumentToSend document) {
+
+        var date = document.fecha;
+        String dateStr = date.getDayOfMonth() + "-" + date.getMonthValue() + "-" + date.getYear();
+
         StringBuilder sb = new StringBuilder()
                 .append("{")
                 .append("\"comprobante\":\"")
                 .append(document.comprobante)
                 .append("\",")
                 .append("\"fecha\":\"")
-                .append(document.fecha.toString())
+                .append(dateStr)
                 .append("\",")
                 .append("\"moneda\":\"")
                 .append(document.moneda.name())
@@ -72,7 +77,8 @@ public class SendDocumentPresenter implements SendDocumentOutputBoundary {
                 .append(document.total.doubleValue())
                 .append("\",")
                 .append("\"tipo\":\"")
-                .append(document.tipo.name());
+                .append(document.tipo.name())
+                .append("\"");
         if (!document.moneda.isLocal()) {
             sb.append("\",")
                     .append("\"tipoCambio\":\"")
