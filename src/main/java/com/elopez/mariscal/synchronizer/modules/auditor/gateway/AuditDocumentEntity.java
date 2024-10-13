@@ -1,6 +1,6 @@
 package com.elopez.mariscal.synchronizer.modules.auditor.gateway;
 
-import com.elopez.mariscal.synchronizer.modules.auditor.entity.DocumentType;
+import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocumentType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,12 +14,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
 @Entity
-@Table(name = "documents", indexes = {
+@Table(name = "audit_document", indexes = {
         @Index(name = "external_id_document_type_index", columnList = "externalId, type")
 }, uniqueConstraints = {
         @UniqueConstraint(name = "external_id_document_type_unique", columnNames = { "externalId", "type" })
 })
-public class DocumentEntity {
+public class AuditDocumentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -30,7 +30,7 @@ public class DocumentEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private DocumentType type;
+    private AuditDocumentType type;
 
     @Column(nullable = false)
     private boolean sentSuccess;
@@ -61,11 +61,11 @@ public class DocumentEntity {
         this.externalId = externalId;
     }
 
-    public DocumentType getType() {
+    public AuditDocumentType getType() {
         return type;
     }
 
-    public void setType(DocumentType type) {
+    public void setType(AuditDocumentType type) {
         this.type = type;
     }
 

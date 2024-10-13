@@ -3,7 +3,7 @@ package com.elopez.mariscal.synchronizer.modules.auditor.service;
 import java.util.List;
 import java.util.Map;
 
-import com.elopez.mariscal.synchronizer.modules.auditor.entity.Document;
+import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocument;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.input.AuditInputBoundary;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.output.AuditOuputBoundary;
 
@@ -16,17 +16,27 @@ public class AuditInteractor implements AuditInputBoundary {
     }
 
     @Override
-    public void saveDocument(Document document) throws Exception {
+    public void saveDocument(AuditDocument document) throws Exception {
         outputBoundary.saveDocument(document);
     }
 
     @Override
-    public void cancelDocument(Document document) throws Exception {
+    public void updateDocument(AuditDocument document) throws Exception {
+        outputBoundary.updateDocument(document);
+    }    
+
+    @Override
+    public void cancelDocument(AuditDocument document) throws Exception {
         outputBoundary.cancelDocument(document);
     }
 
     @Override
-    public Map<String, Object> findDocument(Document document) throws Exception {
+    public void updateDocumentCanceled(AuditDocument document) throws Exception {
+        outputBoundary.updateDocumentCanceled(document);
+    }
+
+    @Override
+    public Map<String, Object> findDocument(AuditDocument document) throws Exception {
         return outputBoundary.findDocument(document);
     }
 

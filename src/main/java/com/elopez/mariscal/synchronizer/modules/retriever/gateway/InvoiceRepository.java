@@ -18,7 +18,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
             + "AND o.\"DocStatus\" = 'C' AND o.\"DocType\" = 'I' AND o.\"CANCELED\" = 'N' "
             + "AND o.\"DocEntry\" = '10572' " //TODO: para pruebas, sacar 
             + "AND o.\"DocDate\" BETWEEN ADD_DAYS(CURRENT_TIMESTAMP, -7) AND CURRENT_TIMESTAMP ORDER BY o.\"DocTotal\" desc", nativeQuery = true)
-    List<Object[]> findNewInvoices(@Param("initialInvoiceNumber") String initialInvoiceNumber);
+    List<Object[]> findInvoices(@Param("initialInvoiceNumber") String initialInvoiceNumber);
 
     @Query(value = "SELECT o.\"DocEntry\", o.\"DocDate\", o.\"DocCur\", "
             + "o.\"DocRate\", o.\"CardName\", o.\"LicTradNum\", o.\"DocTotal\", "

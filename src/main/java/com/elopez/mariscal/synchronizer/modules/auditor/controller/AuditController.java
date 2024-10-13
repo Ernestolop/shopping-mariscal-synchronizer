@@ -3,7 +3,7 @@ package com.elopez.mariscal.synchronizer.modules.auditor.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.elopez.mariscal.synchronizer.modules.auditor.entity.Document;
+import com.elopez.mariscal.synchronizer.modules.auditor.entity.AuditDocument;
 import com.elopez.mariscal.synchronizer.modules.auditor.service.input.AuditInputBoundary;
 
 public class AuditController {
@@ -14,15 +14,23 @@ public class AuditController {
         this.auditInputBoundary = auditInputBoundary;
     }
 
-    public void saveDocument(Document document) throws Exception {
+    public void saveDocument(AuditDocument document) throws Exception {
         auditInputBoundary.saveDocument(document);
     }
 
-    public void cancelDocument(Document document) throws Exception {
+    public void updateDocument(AuditDocument document) throws Exception {
+        auditInputBoundary.updateDocument(document);
+    }
+
+    public void cancelDocument(AuditDocument document) throws Exception {
         auditInputBoundary.cancelDocument(document);
     }
 
-    public Map<String, Object> findDocument(Document document) throws Exception {
+    public void updateDocumentCanceled(AuditDocument document) throws Exception {
+        auditInputBoundary.updateDocumentCanceled(document);
+    }
+
+    public Map<String, Object> findDocument(AuditDocument document) throws Exception {
         return auditInputBoundary.findDocument(document);
     }
 

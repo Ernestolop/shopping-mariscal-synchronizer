@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.elopez.mariscal.synchronizer.modules.auditor.gateway.DocumentGateway;
+import com.elopez.mariscal.synchronizer.modules.auditor.gateway.AuditGateway;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveInvoicesJpa;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCancelledInvoicesJpa;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCreditNotesJpa;
 import com.elopez.mariscal.synchronizer.modules.retriever.gateway.RetrieveCancelledCreditNotesJpa;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.controller.synchronizerController;
-import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCancelledCreditNotesGateway;
-import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCancelledInvoicesGateway;
-import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeCreditNotesGateway;
-import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.SynchronizeInvoicesGateway;
+import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.cancelled.SynchronizeCancelledCreditNotesGateway;
+import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.cancelled.SynchronizeCancelledInvoicesGateway;
+import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.sent.SynchronizeCreditNotesGateway;
+import com.elopez.mariscal.synchronizer.modules.synchronizer.gateway.sent.SynchronizeInvoicesGateway;
 import com.elopez.mariscal.synchronizer.modules.synchronizer.service.synchronizerInteractor;
 
 @Component
@@ -31,7 +31,7 @@ public class Scheduler {
     private RetrieveCancelledCreditNotesJpa retrieveCancelledCreditNotesJpa;
 
     @Autowired
-    private DocumentGateway documentGateway;
+    private AuditGateway documentGateway;
 
     private Logger logger = LoggerFactory.getLogger(Scheduler.class);
 

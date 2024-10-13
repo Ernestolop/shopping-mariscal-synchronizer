@@ -1,9 +1,9 @@
 package com.elopez.mariscal.synchronizer.modules.auditor.entity;
 
-public class Document {
+public class AuditDocument {
     
     public String id;
-    public DocumentType type;
+    public AuditDocumentType type;
     public boolean hasError;
 
 }

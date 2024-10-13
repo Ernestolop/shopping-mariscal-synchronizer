@@ -1,5 +1,5 @@
 package com.elopez.mariscal.synchronizer.modules.auditor.entity;
 
-public enum DocumentType {
+public enum AuditDocumentType {
     FAC, NCR
 }
