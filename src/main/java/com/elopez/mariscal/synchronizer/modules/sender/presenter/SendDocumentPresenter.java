@@ -1,7 +1,5 @@
 package com.elopez.mariscal.synchronizer.modules.sender.presenter;
 
-import java.time.LocalDate;
-
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToSend;
 import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendDocumentOutputBoundary;
 
@@ -23,20 +21,18 @@ public class SendDocumentPresenter implements SendDocumentOutputBoundary {
 
     private String body(DocumentToSend document) {
 
-        LocalDate currentDate = LocalDate.now();
-        String CurrenDateStr = currentDate.getDayOfMonth() + "-" + currentDate.getMonthValue() + "-"
-                + currentDate.getYear();
+        var date = document.fecha;
+        String dateStr = date.getDayOfMonth() + "-" + date.getMonthValue() + "-" + date.getYear();
+
         String documentJson = getDocumentJson(document);
 
         StringBuilder sb = new StringBuilder()
                 .append("{")
                 .append("\"contrato\":\"")
-                .append("\"")
                 .append(contractNumber)
-                .append("\"")
                 .append("\",")
                 .append("\"fecha\":\"")
-                .append(CurrenDateStr)
+                .append(dateStr)
                 .append("\",")
                 .append("\"ventas\":")
                 .append("[")

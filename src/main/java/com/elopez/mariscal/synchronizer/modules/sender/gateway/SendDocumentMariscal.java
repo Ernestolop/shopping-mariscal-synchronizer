@@ -4,7 +4,6 @@ import java.net.http.HttpResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.elopez.mariscal.synchronizer.modules.sender.presenter.SendDocumentGateway;
 
@@ -14,8 +13,11 @@ public class SendDocumentMariscal implements SendDocumentGateway {
 
     private static final String ENDPOINT_REQUEST = "/ventas";
 
-    @Value("${mariscal.token}")
     private String token;
+
+    public SendDocumentMariscal(String token) {
+        this.token = token;
+    }
 
     @Override
     public void sendDocument(String document) throws Exception {

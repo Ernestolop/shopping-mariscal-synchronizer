@@ -26,6 +26,8 @@ public abstract class SynchronizeCancelledDocumentsGateway implements synchroniz
 
     protected abstract DocumentToCancel mapToDocumentToSend(Map<String, Object> document);
 
+    protected abstract String getToken();
+
     protected abstract String getContractNumber();
 
     protected abstract int getMaxSentAttempts();
@@ -59,7 +61,7 @@ public abstract class SynchronizeCancelledDocumentsGateway implements synchroniz
             case "RETRY":
                 synchronizeDocument(document, senderController, auditController, auditDocument, true);
                 break;
-            case "CREATE":
+            case "CANCEL":
                 synchronizeDocument(document, senderController, auditController, auditDocument, false);
                 break;
             case "IGNORE":
@@ -70,15 +72,20 @@ public abstract class SynchronizeCancelledDocumentsGateway implements synchroniz
     private String shouldRetryDocument(AuditDocument auditDocument, AuditController auditController) throws Exception {
         try {
             Map<String, Object> documentInfo = auditController.findDocument(auditDocument);
-            boolean sentSuccess = (boolean) documentInfo.get("sentSuccess");
-            int sentAttempts = (int) documentInfo.get("sentAttempts");
 
-            if (!sentSuccess && sentAttempts < getMaxSentAttempts()) {
+            Boolean canceledSuccess = (Boolean) documentInfo.get("canceledSuccess");
+            Integer canceledAttempts = (Integer) documentInfo.get("canceledAttempts");
+
+            if (canceledSuccess == null || canceledAttempts == null) {
+                return "CANCEL";
+            }
+
+            if (!canceledSuccess && canceledAttempts < getMaxSentAttempts()) {
                 return "RETRY";
             }
             return "IGNORE";
         } catch (DocumentNotFound e) {
-            return "CREATE";
+            return "IGNORE";
         }
 
     }
@@ -92,21 +99,21 @@ public abstract class SynchronizeCancelledDocumentsGateway implements synchroniz
         } catch (Exception e) {
             auditDocument.hasError = true;
         }
-        saveOrUpdateAuditDocument(auditDocument, auditController, isRetry);
+        cancelOrUpdateAuditDocument(auditDocument, auditController, isRetry);
     }
 
-    private void saveOrUpdateAuditDocument(AuditDocument auditDocument, AuditController auditController,
+    private void cancelOrUpdateAuditDocument(AuditDocument auditDocument, AuditController auditController,
             boolean isRetry)
             throws Exception {
         if (isRetry) {
-            auditController.updateDocument(auditDocument);
+            auditController.updateDocumentCanceled(auditDocument);
         } else {
-            auditController.saveDocument(auditDocument);
+            auditController.cancelDocument(auditDocument);
         }
     }
 
     private SendCancelDocumentController initializeSenderController() {
-        SendCancelDocumentMariscal sendGateway = new SendCancelDocumentMariscal();
+        SendCancelDocumentMariscal sendGateway = new SendCancelDocumentMariscal(getToken());
         SendCancelDocumentPresenter presenter = new SendCancelDocumentPresenter(sendGateway, getContractNumber());
         SendCancelDocumentInteractor interactor = new SendCancelDocumentInteractor(presenter);
         return new SendCancelDocumentController(interactor);

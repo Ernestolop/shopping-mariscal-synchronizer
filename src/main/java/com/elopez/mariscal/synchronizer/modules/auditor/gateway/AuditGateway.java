@@ -78,7 +78,9 @@ public class AuditGateway
         if (OptionalDocumentEntity.isPresent()) {
             AuditDocumentEntity documentEntity = OptionalDocumentEntity.get();
             documentEntity.setCanceledSuccess(!document.hasError);
-            documentEntity.setCanceledAttempts(documentEntity.getCanceledAttempts() + 1);
+            Integer canceledAttempts = documentEntity.getCanceledAttempts() == null ? 0
+                    : documentEntity.getCanceledAttempts();
+            documentEntity.setCanceledAttempts(canceledAttempts + 1);
             documentRepository.save(documentEntity);
             return;
         }

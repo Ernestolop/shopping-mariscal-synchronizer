@@ -1,7 +1,5 @@
 package com.elopez.mariscal.synchronizer.modules.sender.presenter;
 
-import java.time.LocalDate;
-
 import com.elopez.mariscal.synchronizer.modules.sender.entity.DocumentToCancel;
 import com.elopez.mariscal.synchronizer.modules.sender.service.boundary.output.SendCancelDocumentOutputBoundary;
 
@@ -23,20 +21,17 @@ public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoun
 
     private String cancelDocumentToJson(DocumentToCancel cancelDocument) {
 
-        LocalDate currentDate = LocalDate.now();
-        String CurrenDateStr = currentDate.getDayOfMonth() + "-" + currentDate.getMonthValue() + "-"
-                + currentDate.getYear();
+        var date = cancelDocument.fecha;
+        String cancelDateStr = date.getDayOfMonth() + "-" + date.getMonthValue() + "-" + date.getYear();
         String cancelDocumentJson = getDocumentJson(cancelDocument);
 
         StringBuilder sb = new StringBuilder()
                 .append("{")
                 .append("\"contrato\":\"")
-                .append("\"")
                 .append(contractNumber)
-                .append("\"")
                 .append("\",")
                 .append("\"fecha\":\"")
-                .append(CurrenDateStr)
+                .append(cancelDateStr)
                 .append("\",")
                 .append("\"ventas\":")
                 .append("[")
@@ -50,6 +45,10 @@ public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoun
 
         var date = cancelDocument.fecha;
         String dateStr = date.getDayOfMonth() + "-" + date.getMonthValue() + "-" + date.getYear();
+
+        var cancelledDate = cancelDocument.anulado;
+        String cancelledDateStr = cancelledDate.getDayOfMonth() + "-" + cancelledDate.getMonthValue() + "-"
+                + cancelledDate.getYear();
 
         StringBuilder sb = new StringBuilder()
                 .append("{")
@@ -84,7 +83,7 @@ public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoun
                 .append(cancelDocument.tipo.name())
                 .append("\",")
                 .append("\"anulado\":\"")
-                .append(cancelDocument.anulado)
+                .append(cancelledDateStr)
                 .append("\"");
         if (!cancelDocument.moneda.isLocal()) {
             sb.append(",")

@@ -28,6 +28,8 @@ public abstract class SynchronizeDocumentsGateway implements synchronizerOutputB
 
     protected abstract DocumentToSend mapToDocumentToSend(Map<String, Object> document);
 
+    protected abstract String getToken();
+
     protected abstract String getContractNumber();
 
     protected abstract int getMaxSentAttempts();
@@ -107,7 +109,7 @@ public abstract class SynchronizeDocumentsGateway implements synchronizerOutputB
     }
 
     private SendDocumentController initializeSenderController() {
-        SendDocumentMariscal sendGateway = new SendDocumentMariscal();
+        SendDocumentMariscal sendGateway = new SendDocumentMariscal(getToken());
         SendDocumentPresenter presenter = new SendDocumentPresenter(sendGateway, getContractNumber());
         SendDocumentInteractor interactor = new SendDocumentInteractor(presenter);
         return new SendDocumentController(interactor);

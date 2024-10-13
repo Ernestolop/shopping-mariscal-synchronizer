@@ -15,17 +15,25 @@ import com.elopez.mariscal.synchronizer.modules.retriever.service.boundary.outpu
 
 public class SynchronizeInvoicesGateway extends SynchronizeDocumentsGateway {
 
+    private String token;
+
     private String contractNumber;
 
     private int maxSentAttempts;
 
     private final RetrieveInvoicesJpa retrieveInvoicesJpa;
 
-    public SynchronizeInvoicesGateway(RetrieveInvoicesJpa retrieveInvoicesJpa, AuditGateway documentGateway, String contractNumber, int maxSentAttempts) {
+    public SynchronizeInvoicesGateway(RetrieveInvoicesJpa retrieveInvoicesJpa, AuditGateway documentGateway, String contractNumber, int maxSentAttempts, String token) {
         super(documentGateway);
         this.retrieveInvoicesJpa = retrieveInvoicesJpa;
         this.contractNumber = contractNumber;
         this.maxSentAttempts = maxSentAttempts;
+        this.token = token;
+    }
+
+    @Override
+    protected String getToken() {
+        return token;
     }
 
     @Override
