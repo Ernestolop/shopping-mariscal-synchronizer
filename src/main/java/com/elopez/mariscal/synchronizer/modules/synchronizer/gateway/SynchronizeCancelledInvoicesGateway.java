@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ import com.elopez.mariscal.synchronizer.modules.sender.gateway.SendCancelDocumen
 import com.elopez.mariscal.synchronizer.modules.sender.presenter.SendCancelDocumentPresenter;
 import com.elopez.mariscal.synchronizer.modules.sender.service.SendCancelDocumentInteractor;
 
+@Component
 public class SynchronizeCancelledInvoicesGateway implements synchronizerOutputBoundary {
 
     private RetrieveCancelledInvoicesJpa retrieveCancelledInvoicesJpa;
@@ -105,7 +107,7 @@ public class SynchronizeCancelledInvoicesGateway implements synchronizerOutputBo
 
     private Document convertToDocumentToAudit(Map<String, Object> invoice) {
         var document = new Document();
-        document.id = (String) invoice.get("id");
+        document.id = invoice.get("id").toString();
         document.type = com.elopez.mariscal.synchronizer.modules.auditor.entity.DocumentType.FAC;
         return document;
     }

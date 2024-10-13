@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ import com.elopez.mariscal.synchronizer.modules.sender.gateway.SendDocumentMaris
 import com.elopez.mariscal.synchronizer.modules.sender.presenter.SendDocumentPresenter;
 import com.elopez.mariscal.synchronizer.modules.sender.service.SendDocumentInteractor;
 
+@Component
 public class SynchronizeCreditNotesGateway implements synchronizerOutputBoundary {
 
     private RetrieveCreditNotesJpa retrieveCreditNotesJpa;
@@ -96,7 +98,7 @@ public class SynchronizeCreditNotesGateway implements synchronizerOutputBoundary
 
     private Document convertToDocumentToAudit(Map<String, Object> creditNote) {
         var document = new Document();
-        document.id = (String) creditNote.get("id");
+        document.id = creditNote.get("id").toString();
         document.type = com.elopez.mariscal.synchronizer.modules.auditor.entity.DocumentType.NCR;
         return document;
     }

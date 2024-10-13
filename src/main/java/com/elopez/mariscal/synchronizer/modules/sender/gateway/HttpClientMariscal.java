@@ -7,10 +7,9 @@ import java.net.http.HttpResponse;
 
 public final class HttpClientMariscal {
 
-    private static String token = "539|RhlUeOztBStuluGgVt4WsRqaqZWymbfcPhJvdVAZ";
     private static final String BASE_URL = "https://sistema.mariscal.com.py/api/contrato";
 
-    public static HttpResponse<String> post(String endpoint, String body) throws Exception {
+    public static HttpResponse<String> post(String endpoint, String body, String token) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + endpoint))

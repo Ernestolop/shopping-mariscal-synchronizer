@@ -41,11 +41,15 @@ public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoun
                 .append("\"ventas\":")
                 .append("[")
                 .append(cancelDocumentJson)
-                .append("]");
+                .append("]")
+                .append("}");
         return sb.toString();
     }
 
     private String getDocumentJson(DocumentToCancel cancelDocument) {
+
+        var date = cancelDocument.fecha;
+        String dateStr = date.getDayOfMonth() + "-" + date.getMonthValue() + "-" + date.getYear();
 
         StringBuilder sb = new StringBuilder()
                 .append("{")
@@ -53,7 +57,7 @@ public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoun
                 .append(cancelDocument.comprobante)
                 .append("\",")
                 .append("\"fecha\":\"")
-                .append(cancelDocument.fecha.toString())
+                .append(dateStr)
                 .append("\",")
                 .append("\"moneda\":\"")
                 .append(cancelDocument.moneda.name())
@@ -80,9 +84,10 @@ public class SendCancelDocumentPresenter implements SendCancelDocumentOutputBoun
                 .append(cancelDocument.tipo.name())
                 .append("\",")
                 .append("\"anulado\":\"")
-                .append(cancelDocument.anulado);
+                .append(cancelDocument.anulado)
+                .append("\"");
         if (!cancelDocument.moneda.isLocal()) {
-            sb.append("\",")
+            sb.append(",")
                     .append("\"tipoCambio\":\"")
                     .append(cancelDocument.tipoCambio.doubleValue())
                     .append("\"");

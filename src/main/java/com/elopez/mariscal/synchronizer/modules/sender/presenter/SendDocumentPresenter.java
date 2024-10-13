@@ -84,7 +84,7 @@ public class SendDocumentPresenter implements SendDocumentOutputBoundary {
                 .append(document.tipo.name())
                 .append("\"");
         if (!document.moneda.isLocal()) {
-            sb.append("\",")
+            sb.append(",")
                     .append("\"tipoCambio\":\"")
                     .append(document.tipoCambio.doubleValue())
                     .append("\"");
